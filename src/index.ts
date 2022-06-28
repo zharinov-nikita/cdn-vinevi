@@ -11,6 +11,7 @@ app.use(cors())
 app.use(fileUpload())
 
 app.use('/cdn', cdnRouter)
+app.use('/cdn', express.static('static'))
 
 async function start() {
   try {

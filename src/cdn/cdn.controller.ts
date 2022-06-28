@@ -1,9 +1,19 @@
 import { Response, Request } from 'express'
 
+type QueryType = {
+  type: 'artist' | 'album' | 'track'
+  picture: 'avatar' | 'cover'
+  _id: string
+}
+
 class CdnController {
   constructor() {}
-  create(req: Request, res: Response): any {
-    return res.json(req.files)
+  async upload(req: { query: QueryType }, res: Response) {
+    const isQuery = req.query?.type
+    if (isQuery) {
+      return res.json(req.query)
+    }
+    return res.status(500).json('error')
   }
 }
 
