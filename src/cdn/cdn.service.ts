@@ -9,8 +9,12 @@ class CdnService {
     })
   }
 
-  save(file: any) {
-    file.mv(file.name)
+  save(file: any, oldDir: string, newDir: string) {
+    file.mv(file.name, () => {
+      fs.rename(oldDir, newDir, (err) => {
+        if (err) throw new Error('error')
+      })
+    })
   }
 }
 

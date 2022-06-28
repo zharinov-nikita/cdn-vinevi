@@ -24,8 +24,11 @@ class CdnController {
         const { _id, type }: QueryType = Object(req.query)
         const { picture }: FilesType = Object(req.files)
 
+        const oldDir = String(picture.name)
+        const newDir = `static/${type}/${_id}/${picture.name}`
+
         cdnService.create(type, _id)
-        cdnService.save(picture)
+        cdnService.save(picture, oldDir, newDir)
 
         return res.json('success')
       }
