@@ -8,6 +8,10 @@ class CdnService {
       if (err) throw new Error('error')
     })
   }
+
+  save(file: any) {
+    file.mv(file.name)
+  }
 }
 
 export default new CdnService()

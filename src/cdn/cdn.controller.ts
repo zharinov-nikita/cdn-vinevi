@@ -19,11 +19,15 @@ class CdnController {
     if (isQueryAndIsFiles) {
       const isQueryAndIsFilesProperty =
         req.query?._id && req.query?.type && req.files?.picture
+
       if (isQueryAndIsFilesProperty) {
         const { _id, type }: QueryType = Object(req.query)
         const { picture }: FilesType = Object(req.files)
+
         cdnService.create(type, _id)
-        return res.end()
+        cdnService.save(picture)
+
+        return res.json('success')
       }
       return res.json('error')
     }
