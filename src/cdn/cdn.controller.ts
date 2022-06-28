@@ -22,7 +22,7 @@ class CdnController {
       if (isQueryAndIsFilesProperty) {
         const { _id, type }: QueryType = Object(req.query)
         const { picture }: FilesType = Object(req.files)
-        cdnService.save(type, _id)
+        cdnService.create(type, _id)
         return res.end()
       }
       return res.json('error')
