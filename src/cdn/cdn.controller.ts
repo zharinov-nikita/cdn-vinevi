@@ -1,4 +1,6 @@
 import { Response, Request } from 'express'
+import fs from 'fs'
+import cdnService from './cdn.service'
 
 type QueryType = {
   _id: string
@@ -17,11 +19,11 @@ class CdnController {
     if (isQueryAndIsFiles) {
       const isQueryAndIsFilesProperty =
         req.query?._id && req.query?.type && req.files?.picture
-
       if (isQueryAndIsFilesProperty) {
         const { _id, type }: QueryType = Object(req.query)
         const { picture }: FilesType = Object(req.files)
-        return res.json({ _id, type, picture: picture.name })
+        cdnService.save(type, _id)
+        return res.end()
       }
       return res.json('error')
     }
