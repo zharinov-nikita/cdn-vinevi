@@ -9,6 +9,12 @@ class CdnService {
     })
   }
 
+  defineExtname(dir: string) {
+    const dirFile = path.resolve(dir)
+    const extname = path.extname(dirFile)
+    return extname
+  }
+
   save(file: any, oldDir: string, newDir: string) {
     file.mv(file.name, () => {
       fs.rename(oldDir, newDir, (err) => {
