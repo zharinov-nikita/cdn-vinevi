@@ -9,7 +9,7 @@ type QueryType = {
 class CdnController {
   constructor() {}
   async upload(req: { query: QueryType }, res: Response) {
-    const isQuery = req.query?.type
+    const isQuery = req.query?.type && req.query?.picture
     if (isQuery) {
       return res.json(req.query)
     }
