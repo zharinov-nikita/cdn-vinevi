@@ -1,21 +1,7 @@
 import { Response, Request } from 'express'
+import { PictureType, PropsType, QueryType } from './dto/index.dto'
 import cdnService from './cdn.service'
 import path from 'path'
-
-export type QueryType = {
-  _id: string
-  type: 'aritst' | 'album' | 'track'
-}
-
-export type FilesType = {
-  picture: File
-}
-
-export type PropsType = {
-  id: number
-  size: number
-  format: 'jpeg' | 'webp' | 'png' | 'gif'
-}
 
 class CdnController {
   async upload(req: Request, res: Response) {
@@ -35,7 +21,7 @@ class CdnController {
         ]
 
         const { _id, type }: QueryType = Object(req.query)
-        const { picture }: FilesType = Object(req.files)
+        const { picture }: PictureType = Object(req.files)
 
         const file: any = picture
         const dir = String(`static/${type}/${_id}`)
