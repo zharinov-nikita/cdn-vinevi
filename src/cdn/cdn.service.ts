@@ -1,7 +1,6 @@
 import { mkdir, rename } from 'fs/promises'
+import { FormatPictureType } from './dto/index.dto'
 import sharp from 'sharp'
-
-type FormatType = 'jpeg' | 'webp' | 'png' | 'gif'
 
 class CdnService {
   async saveFile(file: any, name: string) {
@@ -20,7 +19,7 @@ class CdnService {
     dirSharp: string,
     width: number,
     height: number,
-    format: FormatType,
+    format: FormatPictureType,
     dir: string,
     quality: number = 50
   ) {
