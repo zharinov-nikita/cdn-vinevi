@@ -1,5 +1,5 @@
 import { Response, Request } from 'express'
-import { mkdir, rmdir, rename, access } from 'fs/promises'
+import { mkdir, rmdir, rename, access, readFile } from 'fs/promises'
 import path from 'path'
 import sharp from 'sharp'
 
@@ -43,12 +43,15 @@ class CdnController {
         const dir = String(`static/${type}/${_id}`)
         const extname = path.extname(picture.name)
 
+        const dirSharp = path.resolve(String(`${dir}/source${extname}`))
+
         await file.mv(String(picture.name))
         await mkdir(dir, { recursive: true })
         await rename(String(picture.name), String(`${dir}/source${extname}`))
 
         array.forEach(async ({ id, size, format, option }) => {
-          await sharp(String(`${dir}/source${extname}`))
+          sharp.cache({ files: 0 })
+          await sharp(dirSharp)
             .resize(size, size, { fit: 'contain' })
             [format](option)
             .toFile(String(`${dir}/${size}x${size}.${format}`))
