@@ -57,14 +57,16 @@ class CdnController {
           return res.status(500).json({
             message: {
               level: 'error',
-              content: 'Error on the server',
+              content:
+                'You didnt specify the required query params (type, name, _id)',
             },
           })
         }
         return res.status(500).json({
           message: {
             level: 'error',
-            content: 'Error on the server',
+            content:
+              'You didnt specify the required query params (type, name, _id)',
           },
         })
       }
