@@ -1,7 +1,6 @@
 import { Response, Request } from 'express'
-import { mkdir, rmdir, rename, access, readFile } from 'fs/promises'
+import cdnService from './cdn.service'
 import path from 'path'
-import sharp from 'sharp'
 
 export type QueryType = {
   _id: string
@@ -12,11 +11,10 @@ export type FilesType = {
   picture: File
 }
 
-export type ArrayType = {
+export type PropsType = {
   id: number
   size: number
-  format: 'jpeg' | 'webp'
-  option: any
+  format: 'jpeg' | 'webp' | 'png' | 'gif'
 }
 
 class CdnController {
@@ -29,11 +27,11 @@ class CdnController {
       )
 
       if (isQueryAndIsFilesProperty) {
-        const array: ArrayType[] = [
-          { id: 1, size: 200, format: 'jpeg', option: { quality: 50 } },
-          { id: 2, size: 400, format: 'jpeg', option: { quality: 50 } },
-          { id: 3, size: 200, format: 'webp', option: { quality: 50 } },
-          { id: 4, size: 400, format: 'webp', option: { quality: 50 } },
+        const array: PropsType[] = [
+          { id: 1, size: 200, format: 'png' },
+          { id: 2, size: 400, format: 'png' },
+          { id: 3, size: 200, format: 'webp' },
+          { id: 4, size: 400, format: 'webp' },
         ]
 
         const { _id, type }: QueryType = Object(req.query)
@@ -45,16 +43,18 @@ class CdnController {
 
         const dirSharp = path.resolve(String(`${dir}/source${extname}`))
 
-        await file.mv(String(picture.name))
-        await mkdir(dir, { recursive: true })
-        await rename(String(picture.name), String(`${dir}/source${extname}`))
+        await cdnService.saveFile(file, picture.name)
+        await cdnService.createDir(dir)
+        await cdnService.renameFile(picture.name, `${dir}/source${extname}`)
 
-        array.forEach(async ({ id, size, format, option }) => {
-          sharp.cache({ files: 0 })
-          await sharp(dirSharp)
-            .resize(size, size, { fit: 'contain' })
-            [format](option)
-            .toFile(String(`${dir}/${size}x${size}.${format}`))
+        array.forEach(async (item) => {
+          await cdnService.resizeFile(
+            dirSharp,
+            item.size,
+            item.size,
+            item.format,
+            dir
+          )
         })
 
         return res.status(200).json('success')
