@@ -58,7 +58,7 @@ class CdnController {
             message: {
               level: 'error',
               content:
-                'You didnt specify the required query params (type, name, _id)',
+                'You didnt specify the required query params (type, _id) or the file with the picture key has not been added',
             },
           })
         }
