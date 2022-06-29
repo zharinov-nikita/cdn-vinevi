@@ -11,6 +11,7 @@ export type PictureType = {
 
 export type PropsType = {
   id: number
-  size: number
+  width: number
+  height: number
   format: 'jpeg' | 'webp' | 'png' | 'gif'
 }

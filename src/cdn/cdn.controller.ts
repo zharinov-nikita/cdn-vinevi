@@ -6,10 +6,10 @@ import path from 'path'
 class CdnController {
   async upload(req: Request, res: Response) {
     const array: PropsType[] = [
-      { id: 1, size: 200, format: 'jpeg' },
-      { id: 2, size: 400, format: 'jpeg' },
-      { id: 3, size: 200, format: 'webp' },
-      { id: 4, size: 400, format: 'webp' },
+      { id: 1, width: 200, height: 200, format: 'jpeg' },
+      { id: 2, width: 200, height: 200, format: 'webp' },
+      { id: 3, width: 400, height: 400, format: 'jpeg' },
+      { id: 4, width: 400, height: 400, format: 'webp' },
     ]
 
     const isApiKey: boolean = Boolean(req?.headers?.api_key)
@@ -33,40 +33,55 @@ class CdnController {
 
             const dirSharp = path.resolve(String(`${dir}/source${extname}`))
 
-            await cdnService.saveFile(file, picture.name)
-            await cdnService.createDir(dir)
-            await cdnService.renameFile(picture.name, `${dir}/source${extname}`)
-
-            array.forEach(async (item) => {
-              await cdnService.resizeFile(
-                dirSharp,
-                item.size,
-                item.size,
-                item.format,
-                dir
+            try {
+              await cdnService.saveFile(file, picture.name)
+              await cdnService.createDir(dir)
+              await cdnService.renameFile(
+                picture.name,
+                `${dir}/source${extname}`
               )
+
+              array.forEach(async (item) => {
+                await cdnService.resizeFile(
+                  dirSharp,
+                  item.width,
+                  item.height,
+                  item.format,
+                  dir
+                )
+              })
+            } catch (error) {
+              return res.status(500).json({
+                message: {
+                  level: 'error',
+                  content: error,
+                },
+              })
+            }
+
+            const result = array.map(({ width, height, format }) => {
+              return `http://localhost:3001/cdn/static/${type}/${_id}/${width}x${height}.${format}`
             })
 
             return res.status(200).json({
               message: {
                 level: 'success',
                 content: 'Files processed',
+                pictures: result,
               },
             })
           }
           return res.status(500).json({
             message: {
               level: 'error',
-              content:
-                'You didnt specify the required query params (type, _id) or the file with the picture key has not been added',
+              content: 'The file with the picture key has not been added',
             },
           })
         }
         return res.status(500).json({
           message: {
             level: 'error',
-            content:
-              'You didnt specify the required query params (type, name, _id)',
+            content: 'You didnt specify the required query params (type,  _id)',
           },
         })
       }
