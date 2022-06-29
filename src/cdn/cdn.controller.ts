@@ -6,8 +6,8 @@ import path from 'path'
 class CdnController {
   async upload(req: Request, res: Response) {
     const array: PropsType[] = [
-      { id: 1, size: 200, format: 'png' },
-      { id: 2, size: 400, format: 'png' },
+      { id: 1, size: 200, format: 'jpeg' },
+      { id: 2, size: 400, format: 'jpeg' },
       { id: 3, size: 200, format: 'webp' },
       { id: 4, size: 400, format: 'webp' },
     ]
